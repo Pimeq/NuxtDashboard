@@ -1,6 +1,6 @@
 <script setup lang="ts">
 	const user = useSupabaseUser();
-	const client = useSupabaseAuthClient();
+	const client = useSupabaseClient();
 	const router = useRouter();
 
 	const links = [

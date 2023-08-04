@@ -1,6 +1,6 @@
 <script setup lang="ts">
 	const user = useSupabaseUser();
-	const client = useSupabaseAuthClient();
+	const client = useSupabaseClient();
 	const router = useRouter();
 
 	const logIn = async (
@@ -9,19 +9,13 @@
 		const { error } = await client.auth.signInWithOAuth({
 			provider,
 			options: {
-				redirectTo: "http://localhost:3000/auth/login",
+				redirectTo: "http://localhost:3000/auth/confirmed",
 			},
 		});
 		if (error) {
 			return alert("Something went wrong !");
 		}
 	};
-
-	watchEffect(() => {
-		if (user.value) {
-			return navigateTo("/dashboard");
-		}
-	});
 </script>
 
 <template>
