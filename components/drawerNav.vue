@@ -17,9 +17,9 @@
 			to: "/dashboard",
 		},
 		{
-			label: "Data",
+			label: "Events",
 			icon: "i-heroicons-chart-bar",
-			to: "/navigation/vertical-navigation",
+			to: "/dashboard/events",
 		},
 		{
 			label: "Commands",
@@ -30,5 +30,5 @@
 </script>
 
 <template>
-	<UVerticalNavigation :links="links" class="h-screen" />
+	<UVerticalNavigation :links="links" class="" />
 </template>

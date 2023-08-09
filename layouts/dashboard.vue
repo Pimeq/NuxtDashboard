@@ -4,23 +4,25 @@
 </script>
 
 <template>
-	<div>
-		<div class="float-right m-3">
-			<UButton
-				size="lg"
-				icon=" i-heroicons-lock-open"
-				@click="
-					() => {
-						client.auth.signOut();
-						router.push('/auth/login');
-					}
-				"
-			>
-				Log Out
-			</UButton>
-		</div>
-		<div class="w-2/12 h-screen float-left">
-			<DrawerNav />
+	<div class="h-screen">
+		<div class="w-2/12 h-screen float-left flex flex-col">
+			<div class="flex flex-1 flex-col mb-auto">
+				<DrawerNav />
+			</div>
+			<div class="relative mx-2 mb-10">
+				<UButton
+					size="lg"
+					icon=" i-heroicons-lock-open"
+					@click="
+						() => {
+							client.auth.signOut();
+							router.push('/auth/login');
+						}
+					"
+				>
+					Log Out
+				</UButton>
+			</div>
 		</div>
 
 		<slot class="" />
