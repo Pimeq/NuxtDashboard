@@ -6,7 +6,6 @@ export interface Root {
 	relevance_score_definition: string;
 	feed: Feed[];
 }
-
 export interface Feed {
 	title: string;
 	url: string;
@@ -22,12 +21,10 @@ export interface Feed {
 	overall_sentiment_label: string;
 	ticker_sentiment: TickerSentiment[];
 }
-
 export interface Topic {
 	topic: string;
 	relevance_score: string;
 }
-
 export interface TickerSentiment {
 	ticker: string;
 	relevance_score: string;
@@ -36,13 +33,23 @@ export interface TickerSentiment {
 }
 
 export default defineEventHandler(async (event) => {
-	const user = await serverSupabaseUser(event);
+	try {
+		const activeUser = await serverSupabaseUser(event);
+	} catch (error) {
+		setResponseStatus(event, 403);
+		return {
+			statusCode: "403",
+			message: "Not Authenticated >:[",
+		};
+	}
 	try {
 		const response = await $fetch(
 			`https://www.alphavantage.co/query?limit=10&sort=EARLIEST&function=NEWS_SENTIMENT&apikey=&topics=blockchain`
 		);
 		return response;
 	} catch (error) {
-		return error;
+		return {
+			msg: "unathorized",
+		};
 	}
 });
