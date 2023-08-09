@@ -1,6 +1,6 @@
 import { serverSupabaseUser } from "#supabase/server";
 
-export interface Root {
+export interface ResponseRoot {
 	items: string;
 	sentiment_score_definition: string;
 	relevance_score_definition: string;
@@ -43,7 +43,7 @@ export default defineEventHandler(async (event) => {
 		};
 	}
 	try {
-		const response = await $fetch(
+		const response: ResponseRoot = await $fetch(
 			`https://www.alphavantage.co/query?limit=10&sort=EARLIEST&function=NEWS_SENTIMENT&apikey=&topics=blockchain`
 		);
 		return response;
