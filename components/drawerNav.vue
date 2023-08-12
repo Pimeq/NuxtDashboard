@@ -30,5 +30,5 @@
 </script>
 
 <template>
-	<UVerticalNavigation :links="links" class="" />
+	<UVerticalNavigation :links="links" class="mt-3" />
 </template>
