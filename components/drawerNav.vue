@@ -18,13 +18,13 @@
 		},
 		{
 			label: "Events",
-			icon: "i-heroicons-chart-bar",
+			icon: "i-heroicons-command-line",
 			to: "/dashboard/events",
 		},
 		{
-			label: "Commands",
-			icon: "i-heroicons-command-line",
-			to: "/navigation/command-palette",
+			label: "Trades",
+			icon: "i-heroicons-chart-bar",
+			to: "/dashboard/trades",
 		},
 	];
 </script>
