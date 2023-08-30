@@ -3,6 +3,7 @@ export interface RecentEvents {
 	sentiment_score_definition: string;
 	relevance_score_definition: string;
 	feed: Feed[];
+	Note: string;
 }
 export interface Feed {
 	title: string;

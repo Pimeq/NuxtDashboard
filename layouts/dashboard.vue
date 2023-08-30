@@ -5,11 +5,12 @@
 
 <template>
 	<div class="h-screen">
+		<NuxtLoadingIndicator />
 		<div class="w-2/12 h-screen float-left flex flex-col">
 			<div class="flex flex-1 flex-col mb-auto">
 				<DrawerNav />
 			</div>
-			<div class="relative mx-2 mb-10">
+			<div class="relative mx-2 mb-5">
 				<UButton
 					size="lg"
 					icon=" i-heroicons-lock-open"
@@ -25,6 +26,6 @@
 			</div>
 		</div>
 
-		<slot class="" />
+		<slot />
 	</div>
 </template>

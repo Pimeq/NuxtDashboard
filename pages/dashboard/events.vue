@@ -1,12 +1,15 @@
 <script setup lang="ts">
+	import Skeleton from "@nuxthq/ui/dist/runtime/components/layout/Skeleton.vue";
 	import { RecentEvents } from "types/recentEvents";
 	const user = useSupabaseUser();
 	definePageMeta({
 		layout: "dashboard",
 	});
 
-	const { data } = await useFetch<RecentEvents>("/api/fetchRecentEvents");
-	const rData = ref(data);
+	const { data } = await useFetch<RecentEvents>("/api/fetchRecentEvents", {
+		lazy: true,
+	});
+	console.log(data.value?.Note);
 
 	function formatDate(dateString: string) {
 		const [date, time] = dateString.split("T");
@@ -20,8 +23,8 @@
 
 <template>
 	<div class="max-h-screen">
-		<div v-if="data" class="max-h-screen overflow-y-auto flex-wrap flex">
-			<UCard v-for="item in rData?.feed" class="m-5 relative">
+		<div v-if="!data?.Note" class="max-h-screen overflow-y-auto flex-wrap flex">
+			<UCard v-for="item in data?.feed" class="m-5 relative">
 				<template #header>
 					<h1 class="font-mono">
 						{{ item.title }}
@@ -31,26 +34,6 @@
 					{{ item.summary }}
 				</p>
 				<img :src="item.banner_image" class="max-h-40 m-3" />
-				{{
-					computed(() => {
-						switch (item.overall_sentiment_label) {
-							case "Bullish":
-								break;
-
-							case "Somewhat-Bullish":
-								break;
-
-							case "Neutral":
-								break;
-
-							case "Somewhat-Bearish":
-								break;
-
-							case "Bearish":
-								break;
-						}
-					})
-				}}
 
 				<template #footer>
 					<UBadge
@@ -60,12 +43,13 @@
 						v-for="topic in item.topics"
 						:label="ref(topic.topic).value"
 					/>
-					<p>{{ formatDate(item.time_published) }}</p>
+					<p>
+						{{ formatDate(item.time_published) }}
+						<UBadge color="white">{{ item.overall_sentiment_label }}</UBadge>
+					</p>
 				</template>
 			</UCard>
 		</div>
-		<div v-else>
-			<loading />
-		</div>
+		<div v-else class="flex flex-wrap">Too many requests, please stand by</div>
 	</div>
 </template>
