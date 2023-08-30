@@ -1,8 +1,5 @@
 <script setup lang="ts">
 	import { RecentEvents } from "types/recentEvents";
-
-	const client = useSupabaseClient();
-	const router = useRouter();
 	const user = useSupabaseUser();
 	definePageMeta({
 		layout: "dashboard",
@@ -17,7 +14,7 @@
 		const month = date.substring(4, 6);
 		const day = date.substring(6, 8);
 
-		return year + " " + month + " " + day;
+		return day + "." + month + "." + year;
 	}
 </script>
 
