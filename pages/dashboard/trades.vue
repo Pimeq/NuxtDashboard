@@ -8,6 +8,7 @@
 		layout: "dashboard",
 	});
 
+	//maybe rewite to use lazy
 	const { data } = await useFetch<string | Trades>("/api/fetchTradesData");
 
 	interface BotStatus {
@@ -42,7 +43,7 @@
 
 	const color = computed(() => {
 		if (botStatus.pending.value == true) {
-			return "text-yellow-300";
+			return "text-yellow-300 animate-pulse";
 		} else if (botStatus.data.value?.status == true) {
 			return "text-green-300";
 		} else if (botStatus.pending.value == false) {

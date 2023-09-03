@@ -6,6 +6,7 @@
 		layout: "dashboard",
 	});
 
+	//maybe rewite to use lazy
 	const { data } = await useFetch<RecentEvents>("/api/fetchRecentEvents", {
 		lazy: true,
 	});
