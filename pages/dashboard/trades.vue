@@ -39,13 +39,25 @@
 			label: "Direction",
 		},
 	];
+
+	const color = computed(() => {
+		if (botStatus.pending.value == true) {
+			return "text-yellow-300";
+		} else if (botStatus.data.value?.status == true) {
+			return "text-green-300";
+		} else if (botStatus.pending.value == false) {
+			return "text-red-500";
+		} else {
+			return "text-gray-300";
+		}
+	});
 </script>
 
 <template>
 	<div>
 		<div v-if="user">
 			<div v-if="data" class="max-h-screen overflow-y-auto">
-				<h1 class="font-mono text-xl m-5">
+				<h1 class="font-mono text-xl m-5" :class="color">
 					{{
 						computed(() => {
 							if (botStatus.pending.value == true) {
