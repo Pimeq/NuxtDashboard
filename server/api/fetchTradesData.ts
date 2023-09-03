@@ -14,9 +14,10 @@ export default defineEventHandler(async (event) => {
 	try {
 		const prisma = new PrismaClient();
 		const tradesData = await prisma.closedPositions.findMany();
-		console.log(tradesData);
 
-		return tradesData;
+		return JSON.stringify(tradesData, (key, value) =>
+			typeof value === "bigint" ? parseInt(value.toString()) : value
+		);
 	} catch (error) {
 		return {
 			statusCode: "403",
