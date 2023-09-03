@@ -1,5 +1,6 @@
 import { serverSupabaseUser } from "#supabase/server";
 import { PrismaClient } from "@prisma/client";
+import { json } from "stream/consumers";
 
 export default defineEventHandler(async (event) => {
 	try {
@@ -15,8 +16,10 @@ export default defineEventHandler(async (event) => {
 		const prisma = new PrismaClient();
 		const tradesData = await prisma.closedPositions.findMany();
 
-		return JSON.stringify(tradesData, (key, value) =>
-			typeof value === "bigint" ? parseInt(value.toString()) : value
+		return JSON.parse(
+			JSON.stringify(tradesData, (key, value) =>
+				typeof value === "bigint" ? parseInt(value.toString()) : value
+			)
 		);
 	} catch (error) {
 		return {

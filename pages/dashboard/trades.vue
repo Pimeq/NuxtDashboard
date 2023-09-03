@@ -8,9 +8,14 @@
 		layout: "dashboard",
 	});
 
-	//maybe rewite to use lazy
-	const { data } = await useFetch<string | Trades>("/api/fetchTradesData");
+	const { pending: tradesPending, data: tradesData } = await useLazyFetch<
+		Trades | string
+	>("/api/fetchTradesData");
+	watch(tradesData, (newTradesData) => {
+		tradesData.value = newTradesData;
+	});
 
+	//maybe rewite to use lazy
 	interface BotStatus {
 		status: boolean;
 	}
@@ -21,7 +26,6 @@
 		lazy: true,
 	});
 
-	data.value = JSON.parse(data.value as string) as Trades;
 	const columns = [
 		{
 			key: "id",
@@ -56,29 +60,62 @@
 
 <template>
 	<div>
-		<div v-if="user">
-			<div v-if="data" class="max-h-screen overflow-y-auto">
-				<h1 class="font-mono text-xl m-5" :class="color">
-					{{
-						computed(() => {
-							if (botStatus.pending.value == true) {
-								return "Checking bot status...";
-							} else if (botStatus.data.value?.status == true) {
-								return "Bot is running";
-							} else if (botStatus.pending.value == false) {
-								return "Bot is not running";
-							} else {
-								return "Bot status is unknown";
-							}
-						}).value
-					}}
-				</h1>
-				<div class="m-8">
-					<UTable :columns="columns" :rows="(data as Trades)" />
+		<div v-if="user && tradesData">
+			<div class="max-h-screen overflow-y-auto">
+				<div class="inline-flex">
+					<h1 class="font-mono text-xl m-8" :class="color">
+						{{
+							computed(() => {
+								if (botStatus.pending.value == true) {
+									return "Checking bot status...";
+								} else if (botStatus.data.value?.status == true) {
+									return "Bot is running";
+								} else if (botStatus.data.value?.status == false) {
+									return "Bot is not running";
+								} else {
+									return "Bot status is unknown";
+								}
+							}).value
+						}}
+					</h1>
+					<div class="m-8 ml-2">
+						<UButton
+							class="mx-2"
+							color="primary"
+							:disabled="
+								botStatus.data.value?.status == true ||
+								botStatus.pending.value == true ||
+								botStatus.data.value == null
+							"
+							>Turn On</UButton
+						>
+						<UButton
+							class="mx-2"
+							color="red"
+							:disabled="
+								botStatus.pending.value == true ||
+								botStatus.data.value?.status == false ||
+								botStatus.data.value == null
+							"
+							>Turn Off</UButton
+						>
+						<UButton
+							class="mx-2"
+							color="blue"
+							:disabled="
+								botStatus.data.value == null || botStatus.pending.value == true
+							"
+							>Refresh</UButton
+						>
+					</div>
 				</div>
-			</div>
-			<div v-else class="m-auto text-center align-middle justify-center">
-				<h1>Your trades will appear here</h1>
+				<div class="m-8">
+					<UTable
+						:rows="(tradesData as Trades)"
+						:columns="columns"
+						:loading="tradesPending"
+					/>
+				</div>
 			</div>
 		</div>
 		<div v-else>

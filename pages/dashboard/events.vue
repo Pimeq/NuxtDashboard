@@ -1,5 +1,4 @@
 <script setup lang="ts">
-	import Skeleton from "@nuxthq/ui/dist/runtime/components/layout/Skeleton.vue";
 	import { RecentEvents } from "types/recentEvents";
 	const user = useSupabaseUser();
 	definePageMeta({
@@ -7,10 +6,9 @@
 	});
 
 	//maybe rewite to use lazy
-	const { data } = await useFetch<RecentEvents>("/api/fetchRecentEvents", {
-		lazy: true,
-	});
-	console.log(data.value?.Note);
+	const { data, pending } = await useLazyFetch<RecentEvents>(
+		"/api/fetchRecentEvents"
+	);
 
 	function formatDate(dateString: string) {
 		const [date, time] = dateString.split("T");
@@ -24,7 +22,16 @@
 
 <template>
 	<div class="max-h-screen">
-		<div v-if="!data?.Note" class="max-h-screen overflow-y-auto flex-wrap flex">
+		<div v-if="pending" class="grid place-items-center h-screen">
+			<h1 class="font-mono text-xl m-5 text-yellow-300 animate-pulse">
+				Fetching most recent events...
+			</h1>
+		</div>
+
+		<div
+			v-else-if="!data?.Note"
+			class="max-h-screen overflow-y-auto flex-wrap flex"
+		>
 			<UCard v-for="item in data?.feed" class="m-5 relative">
 				<template #header>
 					<h1 class="font-mono">
