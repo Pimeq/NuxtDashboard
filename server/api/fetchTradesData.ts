@@ -1,7 +1,7 @@
 import { serverSupabaseUser } from "#supabase/server";
 import { PrismaClient } from "@prisma/client";
-import { json } from "stream/consumers";
 
+const prisma = new PrismaClient();
 export default defineEventHandler(async (event) => {
 	try {
 		const activeUser = await serverSupabaseUser(event);
@@ -13,7 +13,6 @@ export default defineEventHandler(async (event) => {
 		};
 	}
 	try {
-		const prisma = new PrismaClient();
 		const tradesData = await prisma.closedPositions.findMany();
 
 		return JSON.parse(

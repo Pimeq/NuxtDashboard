@@ -12,12 +12,11 @@
 		pending: tradesPending,
 		data: tradesData,
 		refresh: tradesDataRefresh,
-	} = await useLazyFetch<Trades>("/api/fetchTradesData");
+	} = await useLazyFetch<Trades>("/api/fetchTradesData", { method: "POST" });
 	watch(tradesData, (newTradesData) => {
 		tradesData.value = newTradesData;
 	});
 
-	//maybe rewite to use lazy
 	interface BotStatus {
 		status: boolean;
 	}
@@ -25,11 +24,11 @@
 		pending: botPending,
 		data: botStatus,
 		refresh: botStatusRefresh,
-	} = await useLazyFetch<BotStatus>("http://127.0.0.1:5000/checkStatus", {
+	} = await useLazyFetch<BotStatus>("/api/checkBotStatus", {
 		method: "POST",
-		mode: "no-cors",
 	});
 	watch(botStatus, (newBotStatus) => {
+		if (newBotStatus?.status == null) return;
 		botStatus.value = newBotStatus;
 	});
 
@@ -71,7 +70,6 @@
 			<div class="max-h-screen overflow-y-auto">
 				<div class="inline-flex">
 					<h1 class="font-mono text-xl m-8" :class="color">
-						{{ botPending }}
 						{{
 							computed(() => {
 								if (botPending == true) {
@@ -111,7 +109,12 @@
 							class="mx-2"
 							color="blue"
 							:disabled="botPending == true"
-							@click="botStatusRefresh()"
+							@click="
+								async () => {
+									const what = await botStatusRefresh();
+									console.log(botStatus, botPending);
+								}
+							"
 						>
 							Refresh
 						</UButton>

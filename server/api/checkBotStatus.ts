@@ -5,17 +5,13 @@ const prisma = new PrismaClient();
 
 export default defineEventHandler(async (event) => {
 	try {
-		const activeUser = await serverSupabaseUser(event);
-		//activeUser!.id == uuid
-
-		//do the same stuff with the inventory to fetch it
-		const user = await prisma.users.findFirst({
-			where: {
-				id: activeUser!.id,
-			},
+		const data = $fetch("http://127.0.0.1:5000/checkStatus", {
+			method: "POST",
+			mode: "no-cors",
+		}).catch((err) => {
+			return;
 		});
-
-		return user;
+		return data;
 	} catch (error) {
 		setResponseStatus(event, 403);
 		return {
