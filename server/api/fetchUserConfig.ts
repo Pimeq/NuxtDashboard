@@ -6,16 +6,14 @@ const prisma = new PrismaClient();
 export default defineEventHandler(async (event) => {
 	try {
 		const activeUser = await serverSupabaseUser(event);
-		//activeUser!.id == uuid
 
-		//do the same stuff with the inventory to fetch it
-		const user = await prisma.users.findFirst({
+		const config = await prisma.configs.findFirst({
 			where: {
-				id: activeUser!.id,
+				user_id: activeUser?.id,
 			},
 		});
 
-		return user;
+		return config;
 	} catch (error) {
 		setResponseStatus(event, 403);
 		return {

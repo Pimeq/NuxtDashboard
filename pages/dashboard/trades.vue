@@ -1,4 +1,5 @@
 <script setup lang="ts">
+	import internal from "stream";
 	import { Trades } from "types/trades";
 
 	const client = useSupabaseClient();
@@ -7,6 +8,16 @@
 	definePageMeta({
 		layout: "dashboard",
 	});
+
+	interface BotStatus {
+		status: boolean;
+	}
+	interface ConfigData {
+		id: number;
+		created_at: string;
+		user_id: string;
+		symbols: string[];
+	}
 
 	const {
 		pending: tradesPending,
@@ -17,9 +28,6 @@
 		tradesData.value = newTradesData;
 	});
 
-	interface BotStatus {
-		status: boolean;
-	}
 	const {
 		pending: botPending,
 		data: botStatus,
@@ -28,8 +36,18 @@
 		method: "POST",
 	});
 	watch(botStatus, (newBotStatus) => {
-		if (newBotStatus?.status == null) return;
 		botStatus.value = newBotStatus;
+	});
+
+	const {
+		pending: configPending,
+		data: configData,
+		refresh: configRefresh,
+	} = await useLazyFetch<ConfigData>("/api/fetchUserConfig", {
+		method: "POST",
+	});
+	watch(configData, (newConfigData) => {
+		configData.value = newConfigData;
 	});
 
 	const columns = [
@@ -66,8 +84,20 @@
 
 <template>
 	<div>
-		<div v-if="user && tradesData">
-			<div class="max-h-screen overflow-y-auto">
+		<div v-if="user">
+			<div v-if="!configData">
+				<div class="h-screen overflow-y-auto text-center">
+					<UAlert
+						class="m-8 w-1/2 mx-auto"
+						title="No config found"
+						icon="i-heroicons-command-line"
+						description="It looks like you haven't set up your config yet. Click the button bellow to get started."
+					/>
+					<configModal />
+				</div>
+			</div>
+
+			<div class="max-h-screen overflow-y-auto" v-if="configData">
 				<div class="inline-flex">
 					<h1 class="font-mono text-xl m-8" :class="color">
 						{{

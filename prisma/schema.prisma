@@ -295,6 +295,7 @@ model closedPositions {
   profit     Float?   @db.Real
   trade_id   BigInt?
   direction  String?
+  user_id    String?
 
   @@schema("public")
 }
@@ -308,6 +309,17 @@ model openPositions {
   rsiThreshold  Float?   @db.Real
   macdThreshold Float?   @db.Real
   entryPrice    Float?   @db.Real
+  user_id       String?
+
+  @@schema("public")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model configs {
+  id         BigInt   @id @default(autoincrement())
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  user_id    String?
+  symbols    Json?    @db.Json
 
   @@schema("public")
 }
