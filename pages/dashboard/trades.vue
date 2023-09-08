@@ -5,10 +5,10 @@
 	const client = useSupabaseClient();
 	const router = useRouter();
 	const user = useSupabaseUser();
+
 	definePageMeta({
 		layout: "dashboard",
 	});
-
 	interface BotStatus {
 		status: boolean;
 	}
@@ -88,12 +88,12 @@
 			<div v-if="!configData">
 				<div class="h-screen overflow-y-auto text-center">
 					<UAlert
-						class="m-8 w-1/2 mx-auto"
+						class="m-8 w-2/3 mx-auto"
 						title="No config found"
 						icon="i-heroicons-command-line"
 						description="It looks like you haven't set up your config yet. Click the button bellow to get started."
 					/>
-					<configModal />
+					<configModal @submit="configRefresh()" />
 				</div>
 			</div>
 

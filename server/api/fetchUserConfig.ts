@@ -13,7 +13,11 @@ export default defineEventHandler(async (event) => {
 			},
 		});
 
-		return config;
+		return JSON.parse(
+			JSON.stringify(config, (key, value) =>
+				typeof value === "bigint" ? parseInt(value.toString()) : value
+			)
+		);
 	} catch (error) {
 		setResponseStatus(event, 403);
 		return {

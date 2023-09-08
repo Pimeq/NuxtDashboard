@@ -2,7 +2,8 @@
 	import type { FormError } from "@nuxthq/ui/dist/runtime/types";
 	const user = useSupabaseUser();
 	const isOpen = ref(false);
-
+	const emit = defineEmits(["submit"]);
+	const toast = useToast();
 	defineShortcuts({
 		escape: {
 			usingInput: true,
@@ -27,7 +28,19 @@
 	const form = ref();
 	async function submit() {
 		await form.value!.validate();
-		console.log(state.value);
+		const response = await useFetch("/api/saveUserConfig", {
+			method: "POST",
+			body: state.value,
+		});
+		toast.add({
+			title: "Config saved",
+			description: "Your config has been saved",
+			icon: "i-heroicons-check-circle-20-solid",
+		});
+		isOpen.value = false;
+		emit("submit");
+
+		console.log(response);
 	}
 </script>
 <template>
@@ -62,7 +75,7 @@
 							v-model="state.symbols"
 							:options="symbols"
 							multiple
-							placeholder="Select people"
+							placeholder="Select symbols"
 						/>
 					</UFormGroup>
 					<UButton class="my-3" type="submit"> Submit </UButton>

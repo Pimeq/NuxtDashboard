@@ -1,6 +1,7 @@
 import { serverSupabaseUser } from "#supabase/server";
-//@ts-ignore
-import { RecentEvents } from "types/recentEvents";
+
+import { RecentEvents } from "../../types/recentEvents";
+
 export default defineEventHandler(async (event) => {
 	try {
 		const activeUser = await serverSupabaseUser(event);
