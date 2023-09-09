@@ -84,7 +84,7 @@
 
 <template>
 	<div>
-		<div v-if="user">
+		<div v-if="user && !tradesPending && !configPending">
 			<div v-if="!configData">
 				<div class="h-screen overflow-y-auto text-center">
 					<UAlert
@@ -155,7 +155,11 @@
 						:rows="(tradesData as Trades)"
 						:columns="columns"
 						:loading="tradesPending"
-					/>
+					>
+						<template #created_at-data="{ row }">
+							{{ new Date(row.created_at).toLocaleString() }}</template
+						>
+					</UTable>
 				</div>
 			</div>
 		</div>
